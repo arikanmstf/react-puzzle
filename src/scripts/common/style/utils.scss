@@ -1,0 +1,3 @@
+@function staticUrl($path) {
+  @return url('~/#{$DIST_FOLDER}static/#{$path}');
+}

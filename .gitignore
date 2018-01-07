@@ -1,0 +1,11 @@
+/node_modules
+/static
+/api
+/dist
+/admin
+/tmp
+npm-debug.log
+
+# IntelliJ
+*.iml
+/.idea
