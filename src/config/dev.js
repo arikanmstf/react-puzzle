@@ -1,4 +1,4 @@
 const Config = {
-  homeUrl: '/'
+  homeUrl: ''
 };
 module.exports = Config;

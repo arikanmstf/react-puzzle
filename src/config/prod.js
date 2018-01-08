@@ -1,4 +1,4 @@
 const Config = {
-  homeUrl: '/react-puzzle/'
+  homeUrl: 'react-puzzle/'
 };
 module.exports = Config;

@@ -1,29 +1,51 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { DEFAULT_PUZZLE_SIZE, DEFAULT_IMAGE_WIDTH } from 'modules/constants';
+import {
+  DEFAULT_PUZZLE_SIZE,
+  DEFAULT_IMAGE_WIDTH,
+  SHOW_PUZZLE_NUMBERS
+} from 'modules/constants';
+
 import PuzzlePiece from 'modules/puzzle/PuzzlePiece';
 
 class Puzzle extends Component {
   constructor(props) {
     super(props);
-    const size = this.props.puzzleSize;
-    this.state = {
-      emptySquareNumber: size * size
-    };
 
-    this.positions = [];
+    this.state = {
+      emptySquareNumber: props.puzzleSize * props.puzzleSize,
+      puzzleSize: props.puzzleSize
+    };
+  }
+
+  componentWillMount() {
     this.generatePositionsArray();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      emptySquareNumber: nextProps.puzzleSize * nextProps.puzzleSize,
+      puzzleSize: nextProps.puzzleSize
+    });
   }
 
   onPieceClick(piecePositionNo) {
     this.setState({
       emptySquareNumber: piecePositionNo
+    }, () => {
+      this.isGameEnded();
     });
   }
 
+  isGameEnded() {
+    // TODO
+    return false;
+  }
+
   generatePositionsArray() {
-    const size = this.props.puzzleSize;
+    this.positions = [];
+    const size = this.state.puzzleSize;
 
     for (let j = 0; j < size; j++) {
       for (let i = 0; i < size; i++) {
@@ -47,7 +69,7 @@ class Puzzle extends Component {
 
   renderPuzzleWrapper() {
     const pieces = [];
-    const size = this.props.puzzleSize;
+    const size = this.state.puzzleSize;
 
     for (let j = 0; j < size; j++) {
       for (let i = 0; i < size; i++) {
@@ -67,7 +89,8 @@ class Puzzle extends Component {
             realPositionNo={realPositionNo}
             currentPositionNo={currentPositionNo}
             emptySquareNumber={this.state.emptySquareNumber}
-            puzzleSize={this.props.puzzleSize}
+            puzzleSize={this.state.puzzleSize}
+            showPuzzleNumbers={this.props.showPuzzleNumbers}
           />
         );
       }
@@ -77,7 +100,13 @@ class Puzzle extends Component {
 
   render() {
     return (
-      <div className="puzzle-container">
+      <div
+        style={{
+          width: this.props.imageWidth,
+          height: this.props.imageWidth
+        }}
+        className="puzzle-container"
+      >
         <div className="puzzle-background" />
         {this.renderPuzzleWrapper()}
       </div>
@@ -87,12 +116,14 @@ class Puzzle extends Component {
 
 Puzzle.propTypes = {
   puzzleSize: PropTypes.number,
-  imageWidth: PropTypes.number
+  imageWidth: PropTypes.number,
+  showPuzzleNumbers: PropTypes.bool
 };
 
 Puzzle.defaultProps = {
   puzzleSize: DEFAULT_PUZZLE_SIZE,
-  imageWidth: DEFAULT_IMAGE_WIDTH
+  imageWidth: DEFAULT_IMAGE_WIDTH,
+  showPuzzleNumbers: SHOW_PUZZLE_NUMBERS
 };
 
 export default Puzzle;

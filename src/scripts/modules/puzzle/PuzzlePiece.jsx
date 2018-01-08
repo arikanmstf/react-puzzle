@@ -23,10 +23,10 @@ class PuzzlePiece extends Component {
     const destinationPosition = this.calculatePosition(destinationPositionNo);
 
     return (
-      (
+      Math.floor(((
         Math.abs(currentPosition.left - destinationPosition.left)
           + Math.abs(currentPosition.top - destinationPosition.top)
-      ) / this.props.pieceWidth === 1
+      ) / this.props.pieceWidth) + 0.4) === 1
     );
   }
 
@@ -50,13 +50,20 @@ class PuzzlePiece extends Component {
         onClick={this.handleClick}
         className={this.props.className}
         style={{
+          width: this.props.pieceWidth,
+          height: this.props.pieceWidth,
           left: currentPosition.left,
           top: currentPosition.top,
           backgroundPositionX: -realPosition.left,
-          backgroundPositionY: -realPosition.top
+          backgroundPositionY: -realPosition.top,
+          backgroundSize: this.props.pieceWidth * this.props.puzzleSize
         }}
       >
-        {this.state.realPositionNo}
+        {
+          this.props.showPuzzleNumbers ?
+            <span className="puzzle-number">{this.state.realPositionNo}</span>
+          : null
+        }
       </div>
     );
   }
@@ -69,7 +76,8 @@ PuzzlePiece.propTypes = {
   pieceWidth: PropTypes.number.isRequired,
   puzzleSize: PropTypes.number.isRequired,
   className: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  showPuzzleNumbers: PropTypes.bool.isRequired
 };
 
 PuzzlePiece.defaultProps = {

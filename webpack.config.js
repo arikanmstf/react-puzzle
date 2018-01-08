@@ -63,7 +63,7 @@ let rules = [
         {
           loader: "sass-loader",
           options: {
-            data: "$DIST_FOLDER: '" + (distFolder ? distFolder + '/' : '') + "';"
+            data: "$DIST_FOLDER: '" + config.homeUrl + "';"
           }
         }
       ]
@@ -115,7 +115,7 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, distFolder),
-    publicPath: config.homeUrl,
+    publicPath: `/${config.homeUrl}`,
     filename: `${PACKAGE_NAME}.js`
   },
   module: {
