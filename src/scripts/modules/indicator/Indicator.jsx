@@ -26,6 +26,14 @@ class Indicator extends Component {
     }, 1000);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isGameEnded) {
+      clearInterval(this.timer);
+      const score = this.state.point;
+      alert(`Congratulations, your score is: ${score}`);
+    }
+  }
+
   renderTimer() {
     return (
       <b>{this.state.point.toLocaleString()}</b>
@@ -48,12 +56,14 @@ class Indicator extends Component {
 
 Indicator.propTypes = {
   puzzleSize: PropTypes.number,
-  showPuzzleNumbers: PropTypes.bool
+  showPuzzleNumbers: PropTypes.bool,
+  isGameEnded: PropTypes.bool
 };
 
 Indicator.defaultProps = {
   puzzleSize: DEFAULT_PUZZLE_SIZE,
-  showPuzzleNumbers: SHOW_PUZZLE_NUMBERS
+  showPuzzleNumbers: SHOW_PUZZLE_NUMBERS,
+  isGameEnded: false
 };
 
 export default Indicator;

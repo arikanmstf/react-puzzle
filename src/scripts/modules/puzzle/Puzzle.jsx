@@ -15,12 +15,14 @@ class Puzzle extends Component {
 
     this.state = {
       emptySquareNumber: props.puzzleSize * props.puzzleSize,
-      puzzleSize: props.puzzleSize
+      puzzleSize: props.puzzleSize,
+      isGameEnded: false
     };
   }
 
   componentWillMount() {
     this.generatePositionsArray();
+    this.generatePieces();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -30,17 +32,35 @@ class Puzzle extends Component {
     });
   }
 
-  onPieceClick(piecePositionNo) {
+  onPieceClick(clickedPiece) {
+    this.pieces.forEach((piece, index) => {
+      if (piece.realPositionNo === clickedPiece.realPositionNo) {
+        this.pieces[index].currentPositionNo = clickedPiece.currentPositionNo;
+      }
+    });
+
     this.setState({
-      emptySquareNumber: piecePositionNo
+      emptySquareNumber: clickedPiece.oldPositionNo
     }, () => {
-      this.isGameEnded();
+      if (this.isGameEnded()) {
+        setTimeout(() => { // css delay
+          this.onGameEnded();
+        }, 500);
+      }
     });
   }
 
+  onGameEnded() {
+    this.setState({
+      isGameEnded: true
+    });
+    this.props.onGameEnded();
+  }
+
   isGameEnded() {
-    // TODO
-    return false;
+    return !this.pieces.some((piece) => (
+      piece.realPositionNo !== piece.currentPositionNo
+    ));
   }
 
   generatePositionsArray() {
@@ -60,6 +80,26 @@ class Puzzle extends Component {
     }
   }
 
+  generatePieces() {
+    const size = this.state.puzzleSize;
+    this.pieces = [];
+
+    for (let j = 0; j < size; j++) {
+      for (let i = 0; i < size; i++) {
+        const realPositionNo = (i + 1) + (j * size);
+
+        if (realPositionNo === size * size) {
+          break;
+        }
+        const currentPositionNo = realPositionNo; // this.generateRandomNumber();
+        this.pieces.push({
+          currentPositionNo,
+          realPositionNo
+        });
+      }
+    }
+  }
+
   generateRandomNumber() {
     const index = Math.floor(Math.random() * this.positions.length);
     const positionNo = this.positions[index];
@@ -68,37 +108,25 @@ class Puzzle extends Component {
   }
 
   renderPuzzleWrapper() {
-    const pieces = [];
     const size = this.state.puzzleSize;
 
-    for (let j = 0; j < size; j++) {
-      for (let i = 0; i < size; i++) {
-        const realPositionNo = (i + 1) + (j * size);
-        const currentPositionNo = this.generateRandomNumber();
-
-        if (realPositionNo === size * size) {
-          break;
-        }
-
-        pieces.push(
-          <PuzzlePiece
-            key={realPositionNo}
-            onClick={(piecePositionNo) => { this.onPieceClick(piecePositionNo); }}
-            pieceWidth={this.props.imageWidth / size}
-            className={`puzzle-piece piece-${realPositionNo}`}
-            realPositionNo={realPositionNo}
-            currentPositionNo={currentPositionNo}
-            emptySquareNumber={this.state.emptySquareNumber}
-            puzzleSize={this.state.puzzleSize}
-            showPuzzleNumbers={this.props.showPuzzleNumbers}
-          />
-        );
-      }
-    }
-    return pieces;
+    return !this.state.isGameEnded && this.pieces.map((piece) => (
+      <PuzzlePiece
+        key={piece.realPositionNo}
+        onClick={(piecePositionNo) => { this.onPieceClick(piecePositionNo); }}
+        pieceWidth={this.props.imageWidth / size}
+        className={`puzzle-piece piece-${piece.realPositionNo}`}
+        realPositionNo={piece.realPositionNo}
+        currentPositionNo={piece.currentPositionNo}
+        emptySquareNumber={this.state.emptySquareNumber}
+        puzzleSize={this.state.puzzleSize}
+        showPuzzleNumbers={this.props.showPuzzleNumbers}
+      />
+    ));
   }
 
   render() {
+    const opacity = this.state.isGameEnded ? 1 : 0.4;
     return (
       <div
         style={{
@@ -107,7 +135,9 @@ class Puzzle extends Component {
         }}
         className="puzzle-container"
       >
-        <div className="puzzle-background" />
+        <div style={{
+            opacity
+          }} className="puzzle-background" />
         {this.renderPuzzleWrapper()}
       </div>
     );
@@ -117,13 +147,15 @@ class Puzzle extends Component {
 Puzzle.propTypes = {
   puzzleSize: PropTypes.number,
   imageWidth: PropTypes.number,
-  showPuzzleNumbers: PropTypes.bool
+  showPuzzleNumbers: PropTypes.bool,
+  onGameEnded: PropTypes.func
 };
 
 Puzzle.defaultProps = {
   puzzleSize: DEFAULT_PUZZLE_SIZE,
   imageWidth: DEFAULT_IMAGE_WIDTH,
-  showPuzzleNumbers: SHOW_PUZZLE_NUMBERS
+  showPuzzleNumbers: SHOW_PUZZLE_NUMBERS,
+  onGameEnded: () => {}
 };
 
 export default Puzzle;

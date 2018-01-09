@@ -12,6 +12,14 @@ class PuzzlePiece extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { currentPositionNo, realPositionNo } = nextProps;
+    this.setState({
+      currentPositionNo,
+      realPositionNo
+    });
+  }
+
   calculatePosition(positionNo) {
     const left = ((positionNo - 1) % this.props.puzzleSize) * this.props.pieceWidth;
     const top = parseInt((positionNo - 1) / this.props.puzzleSize, 10) * this.props.pieceWidth;
@@ -23,10 +31,10 @@ class PuzzlePiece extends Component {
     const destinationPosition = this.calculatePosition(destinationPositionNo);
 
     return (
-      Math.floor(((
+      Math.round((
         Math.abs(currentPosition.left - destinationPosition.left)
           + Math.abs(currentPosition.top - destinationPosition.top)
-      ) / this.props.pieceWidth) + 0.4) === 1
+      ) / this.props.pieceWidth) === 1
     );
   }
 
@@ -36,7 +44,11 @@ class PuzzlePiece extends Component {
       this.setState({
         currentPositionNo: this.props.emptySquareNumber
       }, () => {
-        this.props.onClick(oldPositionNo);
+        this.props.onClick({
+          realPositionNo: this.props.realPositionNo,
+          currentPositionNo: this.state.currentPositionNo,
+          oldPositionNo
+        });
       });
     }
   }
@@ -83,7 +95,7 @@ PuzzlePiece.propTypes = {
 PuzzlePiece.defaultProps = {
   onClick: () => {},
   className: '',
-  currentPositionNo: 0
+  currentPositionNo: 1
 };
 
 export default PuzzlePiece;
