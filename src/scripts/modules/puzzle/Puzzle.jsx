@@ -127,6 +127,7 @@ class Puzzle extends Component {
 
   render() {
     const opacity = this.state.isGameEnded ? 1 : 0.4;
+
     return (
       <div
         style={{
@@ -139,7 +140,8 @@ class Puzzle extends Component {
           style={{
             opacity,
             width: this.props.imageWidth,
-            height: this.props.imageWidth
+            height: this.props.imageWidth,
+            backgroundSize: this.props.imageWidth
           }}
           className="puzzle-background"
         />
