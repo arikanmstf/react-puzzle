@@ -30,7 +30,7 @@ class Indicator extends Component {
     if (nextProps.isGameEnded) {
       clearInterval(this.timer);
       const score = this.state.point;
-      alert(`Congratulations, your score is: ${score}`);
+      alert(`Congratulations, your score is: ${score}`); // eslint-disable-line no-alert
     }
   }
 
