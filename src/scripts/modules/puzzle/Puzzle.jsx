@@ -91,7 +91,7 @@ class Puzzle extends Component {
         if (realPositionNo === size * size) {
           break;
         }
-        const currentPositionNo = realPositionNo; // this.generateRandomNumber();
+        const currentPositionNo = this.generateRandomNumber();
         this.pieces.push({
           currentPositionNo,
           realPositionNo
