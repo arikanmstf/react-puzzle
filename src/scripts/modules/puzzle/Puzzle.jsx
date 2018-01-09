@@ -135,9 +135,12 @@ class Puzzle extends Component {
         }}
         className="puzzle-container"
       >
-        <div style={{
+        <div
+          style={{
             opacity
-          }} className="puzzle-background" />
+          }}
+          className="puzzle-background"
+        />
         {this.renderPuzzleWrapper()}
       </div>
     );
