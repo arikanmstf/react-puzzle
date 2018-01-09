@@ -137,7 +137,7 @@ class Puzzle extends Component {
       >
         <div
           style={{
-            opacity
+            opacity,
             width: this.props.imageWidth,
             height: this.props.imageWidth
           }}
